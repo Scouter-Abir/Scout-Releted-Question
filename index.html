@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scout Quiz</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #4a5568;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: #718096;
+      font-size: 1.1rem;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #667eea;
+    }
+
+    .card h2 {
+      color: #4a5568;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h2 i {
+      font-size: 1.3em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-success {
+      background: linear-gradient(45deg, #48bb78, #38a169);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(45deg, #ed8936, #dd6b20);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #f56565, #e53e3e);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(45deg, #718096, #4a5568);
+      color: white;
+    }
+
+    .question-item {
+      background: #f8fafc;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border-left: 3px solid #48bb78;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+    }
+
+    .question-text {
+      flex: 1;
+    }
+
+    .question-text strong {
+      color: #2d3748;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .question-text em {
+      color: #4a5568;
+      display: block;
+      background: #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+
+    .question-category {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .backup-section {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .section-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .section-card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #e2e8f0;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-color: #667eea;
+    }
+
+    .section-card.selected {
+      border-color: #48bb78;
+      background: #f0fff4;
+      transform: scale(1.05);
+    }
+
+    .section-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .section-card h3 {
+      font-size: 0.9rem;
+      margin: 0;
+      color: #4a5568;
+    }
+
+    .pin-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .pin-container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .compact-modal {
+      max-width: 500px;
+      padding: 25px;
+    }
+
+    .compact-modal h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .compact-modal .subtitle {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .pin-input {
+      font-size: 1.5rem;
+      letter-spacing: 5px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .section-selector {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-card {
+        min-height: 80px;
+        padding: 10px;
+      }
+
+      .section-icon {
+        font-size: 1.5rem;
+      }
+
+      .section-card h3 {
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- PIN Section -->
+  <div id="pinSection" class="pin-section">
+    <div class="pin-container">
+      <div class="logo">🔒</div>
+      <h1>Scout Quiz</h1>
+      <p class="subtitle">Enter PIN to access</p>
+      <input type="password" id="pinInput" class="pin-input" placeholder="Enter PIN" maxlength="30">
+      <div class="btn-group">
+        <button class="btn-primary" onclick="checkPin()">
+          <span>🔓</span> Access
+        </button>
+      </div>
+      <p id="pinError" style="color: #e53e3e; margin-top: 15px; display: none;">❌ Incorrect PIN</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent" class="hidden">
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header">
+        <div class="logo">⚜️</div>
+        <h1>Scout Quiz</h1>
+        <p class="subtitle">Add your questions and start the quiz</p>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-number" id="totalQuestions">0</span>
+          Total Questions
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="lastSaved">0</span>
+          Last Saved
+        </div>
+      </div>
+
+      <!-- Add Question Section -->
+      <div class="card">
+        <h2>➕ Add New Question</h2>
+        <textarea id="q" placeholder="Enter your question here..."></textarea>
+        <input type="text" id="a" placeholder="Enter the correct answer...">
+        
+        <label for="category">Select Category:</label>
+        <select id="category">
+          <option value="membership">Membership</option>
+          <option value="standard">Standard</option>
+          <option value="progress">Progress</option>
+          <option value="service">Service</option>
+          <option value="knowledge">For Our Knowledge</option>
+          <option value="all">All</option>
+        </select>
+        
+        <div class="btn-group">
+          <button class="btn-primary" onclick="addQnA()">
+            <span>💾</span> Save Question
+          </button>
+          <button class="btn-success" onclick="showSectionSelector()">
+            <span>🎮</span> Start Quiz
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Bank Section -->
+      <div class="card">
+        <h2>📚 Question Bank</h2>
+        <div id="bankList">
+          <p style="text-align: center; color: #718096; padding: 20px;">
+            No questions added yet. Add your first question!
+          </p>
+        </div>
+      </div>
+
+      <!-- Backup & Management Section -->
+      <div class="card">
+        <h2>⚙️ Data Management</h2>
+        <div class="btn-group">
+          <button class="btn-warning" onclick="backupData()">
+            <span>💾</span> Backup
+          </button>
+          <button class="btn-secondary" onclick="importData()">
+            <span>📤</span> Import Data
+          </button>
+          <button class="btn-danger" onclick="resetAll()">
+            <span>🗑️</span> Delete All Data
+          </button>
+        </div>
+
+        <!-- Backup Section -->
+        <div id="backupSection" class="backup-section hidden">
+          <h3>📋 Backup Data</h3>
+          <textarea id="backupData" placeholder="Paste backup data here..." rows="4"></textarea>
+          <div class="btn-group">
+            <button class="btn-success" onclick="restoreData()">
+              <span>🔄</span> Restore Data
+            </button>
+            <button class="btn-secondary" onclick="hideBackup()">
+              <span>❌</span> Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact Section Selector Modal -->
+    <div id="sectionSelector" class="pin-section hidden">
+      <div class="pin-container compact-modal">
+        <h2>Select Quiz Section</h2>
+        <p class="subtitle">Choose which section to test</p>
+        
+        <div class="section-selector">
+          <div class="section-card" onclick="selectSection('membership')">
+            <div class="section-icon">👥</div>
+            <h3>Membership</h3>
+          </div>
+          <div class="section-card" onclick="selectSection('standard')">
+            <div class="section-icon">⭐</div>
+            <h3>Standard</h3>
+          </div>
+          <div class="section-card" onclick="selectSection('progress')">
+            <div class="section-icon">📈</div>
+            <h3>Progress</h3>
+          </div>
+          <div class="section-card" onclick="selectSection('service')">
+            <div class="section-icon">🤝</div>
+            <h3>Service</h3>
+          </div>
+          <div class="section-card" onclick="selectSection('knowledge')">
+            <div class="section-icon">🧠</div>
+            <h3>For Our Knowledge</h3>
+          </div>
+          <div class="section-card" onclick="selectSection('all')">
+            <div class="section-icon">📚</div>
+            <h3>All Sections</h3>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn-primary" onclick="startQuizWithSection()">
+            <span>🚀</span> Start Quiz
+          </button>
+          <button class="btn-secondary" onclick="hideSectionSelector()">
+            <span>❌</span> Cancel
+          </button>
+        </div>
+        
+        <div id="sectionError" style="color: #e53e3e; margin-top: 15px; display: none;">
+          ⚠️ Please select a section first
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // PIN Configuration - FIXED VERSION
+    const CORRECT_PIN = "-abir-//?";
+    
+    // Check PIN function
+    function checkPin() {
+      const enteredPin = document.getElementById("pinInput").value;
+      
+      if (enteredPin === CORRECT_PIN) {
+        document.getElementById("pinSection").classList.add("hidden");
+        document.getElementById("mainContent").classList.remove("hidden");
+        document.getElementById("pinError").style.display = "none";
+      } else {
+        document.getElementById("pinError").style.display = "block";
+        document.getElementById("pinInput").value = "";
+        document.getElementById("pinInput").focus();
+      }
+    }
+    
+    // Allow Enter key to submit PIN
+    document.getElementById("pinInput").addEventListener("keyup", function(event) {
+      if (event.key === "Enter") {
+        checkPin();
+      }
+    });
+
+    // Focus on PIN input when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById("pinInput").focus();
+    });
+
+    // Quiz data and functions
+    let bank = JSON.parse(localStorage.getItem("quizBank")) || [];
+    let selectedSection = "";
+    
+    function addQnA(){
+      let q = document.getElementById("q").value.trim();
+      let a = document.getElementById("a").value.trim();
+      let category = document.getElementById("category").value;
+      
+      if(q && a){
+        bank.push({q, a, category, id: Date.now()});
+        saveToStorage();
+        updateBankList();
+        document.getElementById("q").value = "";
+        document.getElementById("a").value = "";
+        showMessage("✅ Question added successfully!");
+      } else {
+        showMessage("⚠️ Please enter both question and answer");
+      }
+    }
+
+    function deleteQuestion(id){
+      if(confirm("Are you sure you want to delete this question?")){
+        bank = bank.filter(item => item.id !== id);
+        saveToStorage();
+        updateBankList();
+        showMessage("🗑️ Question deleted");
+      }
+    }
+
+    function updateBankList(){
+      let container = document.getElementById("bankList");
+      document.getElementById("totalQuestions").textContent = bank.length;
+      
+      if(bank.length === 0){
+        container.innerHTML = `<p style="text-align: center; color: #718096; padding: 20px;">
+          No questions added yet. Add your first question!
+        </p>`;
+        return;
+      }
+      
+      container.innerHTML = "";
+      
+      bank.forEach(item => {
+        let div = document.createElement("div");
+        div.className = "question-item";
+        div.innerHTML = `
+          <div class="question-header">
+            <div class="question-text">
+              <strong>${item.q}</strong>
+              <em>✅ ${item.a}</em>
+              <span class="question-category">${getCategoryName(item.category)}</span>
+            </div>
+            <button class="btn-danger" onclick="deleteQuestion(${item.id})" style="padding: 8px 12px;">
+              <span>Delete</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function getCategoryName(category) {
+      const categories = {
+        'membership': 'Membership',
+        'standard': 'Standard',
+        'progress': 'Progress',
+        'service': 'Service',
+        'knowledge': 'For Our Knowledge',
+        'all': 'All'
+      };
+      return categories[category] || category;
+    }
+
+    function saveToStorage(){
+      localStorage.setItem("quizBank", JSON.stringify(bank));
+      localStorage.setItem("lastSaved", new Date().toLocaleString('en-US'));
+      document.getElementById("lastSaved").textContent = bank.length;
+    }
+
+    function resetAll(){
+      if(confirm("⚠️ Are you sure you want to delete all data? This cannot be undone!")){
+        localStorage.clear();
+        bank = [];
+        updateBankList();
+        showMessage("All data deleted");
+      }
+    }
+
+    function backupData(){
+      const dataStr = JSON.stringify(bank, null, 2);
+      document.getElementById("backupData").value = dataStr;
+      document.getElementById("backupSection").classList.remove("hidden");
+      showMessage("💾 Backup completed");
+    }
+
+    function hideBackup(){
+      document.getElementById("backupSection").classList.add("hidden");
+    }
+
+    function importData(){
+      document.getElementById("backupSection").classList.remove("hidden");
+    }
+
+    function restoreData(){
+      const backupText = document.getElementById("backupData").value.trim();
+      try {
+        const importedData = JSON.parse(backupText);
+        if(Array.isArray(importedData)){
+          bank = importedData;
+          saveToStorage();
+          updateBankList();
+          document.getElementById("backupSection").classList.add("hidden");
+          showMessage("Data restored successfully!");
+        }
+      } catch(e){
+        showMessage("❌ Invalid data format. Please paste valid JSON data.");
+      }
+    }
+
+    function showSectionSelector() {
+      if(bank.length === 0){
+        showMessage("❌ Please add some questions first");
+        return;
+      }
+      document.getElementById("sectionSelector").classList.remove("hidden");
+      document.getElementById("sectionError").style.display = "none";
+      selectedSection = "";
+      
+      // Reset all selections
+      document.querySelectorAll('.section-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+    }
+
+    function hideSectionSelector() {
+      document.getElementById("sectionSelector").classList.add("hidden");
+    }
+
+    function selectSection(section) {
+      // Reset all selections
+      document.querySelectorAll('.section-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // Select the clicked section
+      event.currentTarget.classList.add('selected');
+      selectedSection = section;
+      document.getElementById("sectionError").style.display = "none";
+    }
+
+    function startQuizWithSection() {
+      if (!selectedSection) {
+        document.getElementById("sectionError").style.display = "block";
+        return;
+      }
+      
+      // Store selected section in localStorage for quiz_runner.html
+      localStorage.setItem("selectedSection", selectedSection);
+      window.open('quiz_runner.html', '_blank');
+      hideSectionSelector();
+    }
+
+    function showMessage(msg){
+      alert(msg);
+    }
+
+    // Initialize
+    updateBankList();
+    document.getElementById("lastSaved").textContent = bank.length;
+  </script>
+</body>
+</html>
