@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Runner - Scout Quiz</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .back-btn {
+      background: linear-gradient(45deg, #718096, #4a5568);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(113, 128, 150, 0.4);
+    }
+
+    h1 {
+      color: #4a5568;
+      font-size: 2rem;
+      text-align: center;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .score-board {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .score-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .section-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .quiz-area {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .question-text {
+      font-size: 1.3rem;
+      color: #2d3748;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      margin: 15px 0;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 15px 20px;
+      margin: 8px 0;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      color: #4a5568;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .option-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+      transform: translateX(5px);
+    }
+
+    .feedback {
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .correct {
+      background: #c6f6d5;
+      color: #22543d;
+      border: 1px solid #9ae6b4;
+    }
+
+    .wrong {
+      background: #fed7d7;
+      color: #742a2a;
+      border: 1px solid #feb2b2;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .final-result {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      padding: 30px;
+      border-radius: 15px;
+      margin: 20px 0;
+    }
+
+    .mistake-item {
+      background: #fff5f5;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border-left: 4px solid #f56565;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .back-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header with Back Button -->
+    <div class="header">
+      <button class="back-btn" onclick="goBack()">
+        <span>⬅</span> Back To Home
+      </button>
+      <h1>Quiz Time</h1>
+    </div>
+
+    <!-- Written Quiz Section -->
+    <div id="quizArea">
+      <div class="score-board">
+        <span class="score-number" id="currentScore">0</span>
+        <span>/</span>
+        <span id="totalQuestions">0</span>
+        <div>Written Questions</div>
+        <div class="section-badge" id="sectionBadge">All Sections</div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="writtenProgress" style="width: 0%"></div>
+      </div>
+
+      <div class="quiz-area">
+        <div class="question-text" id="quizQuestion"></div>
+        <input type="text" id="writtenAnswer" placeholder="Type your answer here..." autocomplete="off">
+        <button class="btn-primary" onclick="checkWritten()">
+          <span>📤</span> Submit Answer
+        </button>
+        <div id="feedback"></div>
+      </div>
+    </div>
+
+    <!-- MCQ Section -->
+    <div id="mcqArea" class="hidden">
+      <div class="score-board">
+        <span class="score-number" id="mcqScore">0</span>
+        <span>/</span>
+        <span id="totalMCQ">0</span>
+        <div>MCQ Questions</div>
+        <div class="section-badge" id="mcqSectionBadge">All Sections</div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="mcqProgress" style="width: 0%"></div>
+      </div>
+
+      <div class="quiz-area">
+        <div class="question-text" id="mcqQuestion"></div>
+        <div id="mcqOptions"></div>
+        <div id="mcqFeedback"></div>
+      </div>
+    </div>
+
+    <!-- Final Result -->
+    <div id="finalResult" class="hidden">
+      <div class="final-result">
+        <div class="result-card">
+          <h2>🎉 Quiz Completed!</h2>
+          <div style="font-size: 1.2rem; margin-top: 15px;">
+            <p>Written: <strong id="writtenFinal">0</strong></p>
+            <p>MCQ: <strong id="mcqFinal">0</strong></p>
+            <p style="font-size: 1.5rem; margin-top: 10px;">Total: <strong id="totalFinal">0</strong></p>
+          </div>
+        </div>
+        
+        <button class="btn-primary" onclick="restartQuiz()" style="margin-top: 20px;">
+          <span>🔄</span> Try Again
+        </button>
+      </div>
+
+      <!-- Mistakes Section -->
+      <div id="mistakesSection" class="hidden">
+        <h3 style="color: #742a2a; margin: 30px 0 15px 0;">❌ Mistakes Review:</h3>
+        <div id="mistakesList"></div>
+      </div>
+    </div>
+
+    <!-- No Questions Warning -->
+    <div id="noQuestions" class="hidden">
+      <div class="quiz-area" style="text-align: center;">
+        <h2>❌ No Questions Available</h2>
+        <p>Please add some questions in the main page first</p>
+        <button class="back-btn" onclick="goBack()" style="margin-top: 20px;">
+          <span>⬅</span> Back to Main Page
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const letters = ["A", "B", "C", "D"];
+    
+    // Get questions from localStorage and filter by selected section
+    let bank = JSON.parse(localStorage.getItem("quizBank")) || [];
+    let selectedSection = localStorage.getItem("selectedSection") || "all";
+    
+    // Filter questions by selected section
+    if (selectedSection !== "all") {
+      bank = bank.filter(item => item.category === selectedSection);
+    }
+    
+    // Set section badge text
+    const sectionNames = {
+      'membership': 'Membership',
+      'standard': 'Standard',
+      'progress': 'Progress',
+      'service': 'Service',
+      'knowledge': 'For Our Knowledge',
+      'all': 'All Sections'
+    };
+    
+    // Show appropriate content based on whether we have questions
+    if (bank.length === 0) {
+      document.getElementById("quizArea").classList.add("hidden");
+      document.getElementById("noQuestions").classList.remove("hidden");
+    } else {
+      document.getElementById("sectionBadge").textContent = sectionNames[selectedSection];
+      document.getElementById("mcqSectionBadge").textContent = sectionNames[selectedSection];
+    }
+
+    let quiz = shuffle([...bank]);
+    let current = 0, score = 0;
+    let mistakesList = [];
+    let mcqQuestions = [];
+    let currentMCQ = 0, scoreMCQ = 0;
+
+    function shuffle(arr) {
+      return arr.sort(() => Math.random() - 0.5);
+    }
+
+    function loadQuestion() {
+      if (current >= quiz.length) {
+        endWrittenQuiz();
+        return;
+      }
+      
+      document.getElementById("currentScore").textContent = score;
+      document.getElementById("totalQuestions").textContent = quiz.length;
+      document.getElementById("feedback").innerHTML = "";
+      document.getElementById("writtenAnswer").value = "";
+      document.getElementById("quizQuestion").innerText = quiz[current].q;
+      document.getElementById("writtenAnswer").focus();
+      
+      // Update progress bar
+      const progress = ((current) / quiz.length) * 100;
+      document.getElementById("writtenProgress").style.width = `${progress}%`;
+    }
+
+    function checkWritten() {
+      let ans = document.getElementById("writtenAnswer").value.trim();
+      let correct = quiz[current].a;
+      
+      if (ans.toLowerCase() === correct.toLowerCase()) {
+        document.getElementById("feedback").innerHTML = "<div class='feedback correct'>✅ Correct Answer!</div>";
+        score++;
+      } else {
+        document.getElementById("feedback").innerHTML = `<div class='feedback wrong'>❌ Wrong! Correct answer: ${correct}</div>`;
+        mistakesList.push({ 
+          q: quiz[current].q, 
+          yourAnswer: ans, 
+          correct: correct,
+          type: 'written'
+        });
+      }
+      
+      current++;
+      setTimeout(loadQuestion, 1500);
+    }
+
+    function endWrittenQuiz() {
+      document.getElementById("quizArea").classList.add("hidden");
+      
+      // Create MCQ questions from the same bank
+      mcqQuestions = shuffle([...bank]);
+      currentMCQ = 0;
+      scoreMCQ = 0;
+      
+      document.getElementById("mcqArea").classList.remove("hidden");
+      document.getElementById("totalMCQ").textContent = mcqQuestions.length;
+      loadMCQ();
+    }
+
+    function loadMCQ() {
+      if (currentMCQ >= mcqQuestions.length) {
+        endMCQQuiz();
+        return;
+      }
+      
+      document.getElementById("mcqScore").textContent = scoreMCQ;
+      document.getElementById("mcqFeedback").innerHTML = "";
+      
+      let qObj = mcqQuestions[currentMCQ];
+      let correct = qObj.a;
+      
+      // Get wrong answers from other questions
+      let wrongs = shuffle(bank.filter(x => x.a !== correct))
+        .slice(0, 3)
+        .map(x => x.a);
+      
+      let options = shuffle([correct, ...wrongs]);
+      
+      document.getElementById("mcqQuestion").innerText = qObj.q;
+      let div = document.getElementById("mcqOptions");
+      div.innerHTML = "";
+      
+      options.forEach((opt, i) => {
+        let btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<strong>${letters[i]}.</strong> ${opt}`;
+        btn.onclick = () => checkMCQ(opt, correct);
+        div.appendChild(btn);
+      });
+      
+      // Update progress bar
+      const progress = ((currentMCQ) / mcqQuestions.length) * 100;
+      document.getElementById("mcqProgress").style.width = `${progress}%`;
+    }
+
+    function checkMCQ(ans, correct) {
+      if (ans.toLowerCase() === correct.toLowerCase()) {
+        document.getElementById("mcqFeedback").innerHTML = "<div class='feedback correct'>✅ Correct Answer!</div>";
+        scoreMCQ++;
+      } else {
+        document.getElementById("mcqFeedback").innerHTML = `<div class='feedback wrong'>❌ Wrong! Correct answer: ${correct}</div>`;
+        mistakesList.push({ 
+          q: mcqQuestions[currentMCQ].q, 
+          yourAnswer: ans, 
+          correct: correct,
+          type: 'mcq'
+        });
+      }
+      
+      currentMCQ++;
+      setTimeout(loadMCQ, 1500);
+    }
+
+    function endMCQQuiz() {
+      document.getElementById("mcqArea").classList.add("hidden");
+      document.getElementById("finalResult").classList.remove("hidden");
+      
+      document.getElementById("writtenFinal").textContent = `${score}/${quiz.length}`;
+      document.getElementById("mcqFinal").textContent = `${scoreMCQ}/${mcqQuestions.length}`;
+      document.getElementById("totalFinal").textContent = `${score + scoreMCQ}/${quiz.length + mcqQuestions.length}`;
+      
+      if (mistakesList.length > 0) {
+        document.getElementById("mistakesSection").classList.remove("hidden");
+        let container = document.getElementById("mistakesList");
+        container.innerHTML = "";
+        
+        mistakesList.forEach((mistake, index) => {
+          let div = document.createElement("div");
+          div.className = "mistake-item";
+          div.innerHTML = `
+            <p><strong>Question:</strong> ${mistake.q}</p>
+            <p><strong>Your Answer:</strong> ${mistake.yourAnswer || "Empty"}</p>
+            <p><strong>Correct Answer:</strong> ${mistake.correct}</p>
+            <p><strong>Type:</strong> ${mistake.type.toUpperCase()}</p>
+          `;
+          container.appendChild(div);
+        });
+      }
+    }
+
+    function restartQuiz() {
+      quiz = shuffle([...bank]);
+      current = 0;
+      score = 0;
+      mistakesList = [];
+      mcqQuestions = shuffle([...bank]);
+      currentMCQ = 0;
+      scoreMCQ = 0;
+      
+      document.getElementById("finalResult").classList.add("hidden");
+      document.getElementById("mistakesSection").classList.add("hidden");
+      document.getElementById("quizArea").classList.remove("hidden");
+      
+      // Reset progress bars
+      document.getElementById("writtenProgress").style.width = "0%";
+      document.getElementById("mcqProgress").style.width = "0%";
+      
+      loadQuestion();
+    }
+
+    function goBack() {
+      window.close();
+    }
+
+    // Start the quiz if questions exist
+    if (bank.length > 0) {
+      loadQuestion();
+    }
+  </script>
+</body>
+</html>
